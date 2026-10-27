@@ -33,7 +33,8 @@ public class JournalEntryService {
             userRepo.save(userDetail);
             return new ResponseEntity<>(saved, HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new RuntimeException("an error occure while saving the entry" + e);
         }
     }
 
