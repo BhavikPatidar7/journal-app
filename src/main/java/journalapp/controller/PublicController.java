@@ -1,7 +1,7 @@
 package journalapp.controller;
 
 import journalapp.entity.User;
-import journalapp.reposetory.UserRepo;
+
 import journalapp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

@@ -8,6 +8,8 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,17 +21,20 @@ public class JournalEntryController {
 
     @Autowired
     public JournalEntryService journalEntryService;
-    @Autowired
-    private UserRepo userRepo;
 
-    @GetMapping("/getAll/{name}")
-    public ResponseEntity<List<JournalEntry>> getAll(@PathVariable String name) {
+
+    @GetMapping("/getAll")
+    public ResponseEntity<List<JournalEntry>> getAll() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String name = authentication.getName();
         return  journalEntryService.getAll(name);
     }
 
-    @PostMapping("/create/{user}")
-    public ResponseEntity<JournalEntry> createEntry(@RequestBody JournalEntry entry, @PathVariable String user) {
-        return journalEntryService.createEntry(entry, user);
+    @PostMapping("/create")
+    public ResponseEntity<JournalEntry> createEntry(@RequestBody JournalEntry entry) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String name = authentication.getName();
+        return journalEntryService.createEntry(entry, name);
     }
 
     @GetMapping("id/{id}")
