@@ -2,18 +2,16 @@ package journalapp.controller;
 
 
 import journalapp.entity.JournalEntry;
-import journalapp.reposetory.UserRepo;
 import journalapp.services.JournalEntryService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
+
 
 @RestController
 @RequestMapping("journal")
@@ -38,15 +36,18 @@ public class JournalEntryController {
     }
 
     @GetMapping("id/{id}")
-    public ResponseEntity<JournalEntry> getById(@PathVariable ObjectId id) {
-        Optional<JournalEntry> journalEntry =  journalEntryService.findById(id);
-        return journalEntry.map(entry -> new ResponseEntity<>(entry, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    public ResponseEntity<?> getById(@PathVariable ObjectId id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String user = authentication.getName();
+//        ResponseEntity<JournalEntry> journalEntry =  journalEntryService.findById(id, user);
+        return journalEntryService.findById(id, user);
     }
 
-    @DeleteMapping("id/{id}/{name}")
-    public ResponseEntity<?> deleteEntry(@PathVariable ObjectId id, @PathVariable String name) {
+    @DeleteMapping("id/{id}")
+    public ResponseEntity<?> deleteEntry(@PathVariable ObjectId id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String name = authentication.getName();
         return journalEntryService.deleteEntry(id, name);
-//        return new ResponseEntity<>( HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("id/{id}")

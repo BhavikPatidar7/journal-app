@@ -14,7 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
-public class StringSecurity extends WebSecurityConfigurerAdapter {
+public class SpringSecurity extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
@@ -24,6 +24,7 @@ public class StringSecurity extends WebSecurityConfigurerAdapter {
                 authorizeRequests().
                 antMatchers("/journal/**", "/user/**").
                 authenticated().
+                antMatchers("/admin/**").hasRole("ADMIN").
                 anyRequest().permitAll().
                 and().
                 httpBasic().
