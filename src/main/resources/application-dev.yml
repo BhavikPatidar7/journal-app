@@ -1,0 +1,9 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb+srv://bhavikpatidar1007_db_user:qmN6IBtGBdHPA2Fx@cluster0.gtpfnfx.mongodb.net/?appName=Cluster0
+      database: journal
+      auto-index-creation: true
+
+server:
+  port: 8080
