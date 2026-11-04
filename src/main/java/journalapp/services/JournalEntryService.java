@@ -8,7 +8,6 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +16,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Component
 public class JournalEntryService {
@@ -56,7 +54,7 @@ public class JournalEntryService {
                 collect(Collectors.toList());
         if (!collect.isEmpty()) {
             Optional<JournalEntry> entry = journalEntryRepo.findById(id);
-            return new ResponseEntity<>(entry.get(), HttpStatus.OK);
+            return new ResponseEntity<>(entry.isPresent() ? entry.get() : "Opps something went wrong", HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }

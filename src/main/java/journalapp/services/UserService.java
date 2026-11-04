@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -21,17 +22,40 @@ public class UserService {
 
     private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    public List<User> getAll() {
-        return userRepo.findAll();
+    public ResponseEntity<List<User>> getAll() {
+        List<User> users = userRepo.findAll();
+        if(!users.isEmpty()){
+            return new ResponseEntity<>(users, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    public ResponseEntity<User> getProfile(String name){
+        User user = userRepo.findByUserName(name);
+        if(user != null){
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     public ResponseEntity<User> create(User user) {
         try {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
-            user.setRoles(Arrays.asList("User"));
+            user.setRoles(Collections.singletonList("User"));
             userRepo.save(user);
             return new ResponseEntity<>(user, HttpStatus.CREATED);
-        }catch (Exception e){
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    public ResponseEntity<User> createAdminUser(User user) {
+        try {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setRoles((Arrays.asList("User", "ADMIN")));
+            userRepo.save(user);
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -47,7 +71,7 @@ public class UserService {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    public ResponseEntity<?> deleteUser(String userName){
+    public ResponseEntity<?> deleteUser(String userName) {
         return new ResponseEntity<>(userRepo.deleteByUserName(userName), HttpStatus.NO_CONTENT);
     }
 
